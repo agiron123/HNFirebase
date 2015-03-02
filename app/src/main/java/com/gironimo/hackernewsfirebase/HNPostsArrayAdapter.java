@@ -16,6 +16,7 @@ import com.firebase.client.ValueEventListener;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 //ArrayAdapter to place posts into the listview
@@ -23,11 +24,13 @@ public class HNPostsArrayAdapter extends ArrayAdapter<HNPost> {
 
     private Context context;
     private ArrayList<HNPost> topStories;
+    private HashMap<Long,HNPost> postsHashMap;
 
     public HNPostsArrayAdapter(Context context, int resource, ArrayList<HNPost> topStories) {
         super(context, resource, topStories);
         this.context = context;
         this.topStories = topStories;
+        this.postsHashMap = new HashMap<Long,HNPost>();
     }
 
     @Override
@@ -88,7 +91,11 @@ public class HNPostsArrayAdapter extends ArrayAdapter<HNPost> {
                                 if(itemMap.get("url")!= null)
                                     post.setUrl((String) itemMap.get("url"));
 
-                                topStories.add(post);
+                                if(!postsHashMap.containsKey(post.getId()))
+                                {
+                                    topStories.add(post);
+                                }
+                                postsHashMap.put(post.getId(), post);
                                 notifyDataSetChanged();
                             }
                         }
